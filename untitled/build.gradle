@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+    id 'groovy'
+}
+
+group = 'com.moftium.anymapper'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // testing
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.11.0'
+    testImplementation 'org.spockframework:spock-core:2.4-M6-groovy-4.0'
+}
+
+test {
+    useJUnitPlatform()
+}
