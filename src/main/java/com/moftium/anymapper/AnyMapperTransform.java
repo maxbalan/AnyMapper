@@ -7,6 +7,8 @@ import java.util.Map;
 
 public class AnyMapperTransform {
 
+    private AnyMapperTransform() {
+    }
 
     @SuppressWarnings("unchecked")
     protected static Map<String, Object> transform(Map<String, Object> source, List<AnyMapperPoint> mappingPoints) {
@@ -32,18 +34,21 @@ public class AnyMapperTransform {
 
     @SuppressWarnings("unchecked")
     private static void mapList(Map<String, Object> result, AnyMapperPoint point, Object sourceValue) {
-        if (!(sourceValue instanceof List<?> sourceList)) {
+        if (!(sourceValue instanceof List<?>)) {
             return;
         }
 
+        List<?> sourceList = (List<?>) sourceValue;
         List<Object> transformedList = new ArrayList<>();
 
         for (Object item : sourceList) {
-            if (!(item instanceof Map<?, ?> sourceItem)) {
+            if (!(item instanceof Map<?, ?>)) {
                 continue;
             }
 
+            Map<?, ?> sourceItem = (Map<?, ?>) item;
             Map<String, Object> childMap = transform((Map<String, Object>) sourceItem, point.children());
+
             transformedList.add(childMap);
         }
 

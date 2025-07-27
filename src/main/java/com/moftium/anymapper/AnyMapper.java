@@ -23,14 +23,14 @@ public class AnyMapper {
 
         for (Map.Entry<String, Object> entry : mappingConfig.entrySet()) {
             if (!(entry.getValue() instanceof Map)) {
-                throw new AnyMapperConfigParserException("config key [%s] is not a map".formatted(entry.getKey()));
+                throw new AnyMapperConfigParserException(String.format("config key [%s] is not a map", entry.getKey()));
             }
 
             String[] sourcePath = entry.getKey().split("\\.");
             Map<String, Object> config = (Map<String, Object>) entry.getValue();
 
             if (!config.containsKey("destination")) {
-                throw new AnyMapperConfigParserException("config key [%s] missing 'destination' field".formatted(entry.getKey()));
+                throw new AnyMapperConfigParserException(String.format("config key [%s] missing 'destination' field", entry.getKey()));
             }
 
             String[] destinationPath = ((String) config.get("destination")).split("\\.");

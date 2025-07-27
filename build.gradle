@@ -1,21 +1,100 @@
 plugins {
     id 'java'
     id 'groovy'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
 }
 
-group = 'com.moftium.anymapper'
-version = '1.0-SNAPSHOT'
+group = 'com.moftium'
+version = '1.0.0'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    // testing
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.11.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.0'
     testImplementation 'org.spockframework:spock-core:2.4-M6-groovy-4.0'
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
+tasks.withType(Javadoc) {
+    options.addStringOption('Xdoclint:none', '-quiet')
+    failOnError = false
 }
 
 test {
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = "anymapper"
+            from components.java
+
+//            artifact tasks.named("sourcesJar")
+//            artifact tasks.named("javadocJar")
+
+            pom {
+                name = "AnyMapper"
+                description = "Flexible transformer for nested map and list structures."
+                url = "https://github.com/maxbalan/AnyMapper"
+
+                licenses {
+                    license {
+                        name = "The MIT License"
+                        url = "https://opensource.org/licenses/MIT"
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = System.getenv("DEVELOPER_ID")
+                        name = System.getenv("DEVELOPER_NAME")
+                        email = System.getenv("DEVELOPER_EMAIL")
+                    }
+                }
+
+                scm {
+                    connection = "scm:git:git://github.com/maxbalan/AnyMapper.git"
+                    developerConnection = "scm:git:ssh://github.com:maxbalan/AnyMapper.git"
+                    url = "https://github.com/maxbalan/AnyMapper"
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "OSSRH"
+            url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+            credentials {
+                username = System.getenv("OSSRH_USERNAME")
+                password = System.getenv("OSSRH_PASSWORD")
+            }
+        }
+    }
+}
+
+import java.util.Base64
+
+signing {
+    def encodedKey = System.getenv("SIGNING_SECRET_KEY")
+    def keyId = System.getenv("SIGNING_KEY_ID")
+    def password = System.getenv("SIGNING_PASSWORD")
+
+    if (encodedKey && keyId && password) {
+        def decodedKey = new String(Base64.decoder.decode(encodedKey), 'UTF-8')
+        useInMemoryPgpKeys(keyId, decodedKey, password)
+        sign publishing.publications["mavenJava"]
+    }
 }
