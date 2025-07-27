@@ -2,7 +2,11 @@ package com.moftium.anymapper;
 
 import com.moftium.anymapper.exception.AnyMapperConfigParserException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class AnyMapper {
     private final Map<String, Object> mappingConfig;
@@ -26,7 +30,7 @@ public class AnyMapper {
             Map<String, Object> config = (Map<String, Object>) entry.getValue();
 
             if (!config.containsKey("destination")) {
-                throw new AnyMapperConfigParserException("config key [%s] missing destination field".formatted(entry.getKey()));
+                throw new AnyMapperConfigParserException("config key [%s] missing 'destination' field".formatted(entry.getKey()));
             }
 
             String[] destinationPath = ((String) config.get("destination")).split("\\.");
