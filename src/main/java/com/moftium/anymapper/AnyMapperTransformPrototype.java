@@ -2,7 +2,7 @@ package com.moftium.anymapper;
 
 import java.util.*;
 
-public class AnyMapper {
+public class AnyMapperTransformPrototype {
     @SuppressWarnings("unchecked")
     public static Map<String, Object> transform(Map<String, Object> source, Map<String, Object> mapping) {
         Map<String, Object> result = new HashMap<>();

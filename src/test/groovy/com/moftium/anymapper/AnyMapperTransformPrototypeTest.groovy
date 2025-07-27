@@ -4,7 +4,7 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 @Unroll
-class AnyMapperTest extends Specification {
+class AnyMapperTransformPrototypeTest extends Specification {
 
     def "when converting a nest map to single level then validate the result"() {
         given:
@@ -12,7 +12,7 @@ class AnyMapperTest extends Specification {
         def mapping = ['key1.key2.key3': ['destination': 'test']]
 
         when:
-        def result = AnyMapper.transform(source, mapping)
+        def result = AnyMapperTransformPrototype.transform(source, mapping)
 
         then:
         println result
@@ -25,7 +25,7 @@ class AnyMapperTest extends Specification {
         def mapping = ['key1.key2.key3': ['destination': 'test.1.2.3']]
 
         when:
-        def result = AnyMapper.transform(source, mapping)
+        def result = AnyMapperTransformPrototype.transform(source, mapping)
 
         then:
         println result
@@ -38,7 +38,7 @@ class AnyMapperTest extends Specification {
         def mapping = ['key1.key2.key3': ['destination': 'test']]
 
         when:
-        def result = AnyMapper.transform(source, mapping)
+        def result = AnyMapperTransformPrototype.transform(source, mapping)
 
         then:
         println result
@@ -55,7 +55,7 @@ class AnyMapperTest extends Specification {
                                           type       : 'list']]
 
         when:
-        def result = AnyMapper.transform(source, mapping)
+        def result = AnyMapperTransformPrototype.transform(source, mapping)
 
         then:
         println result
@@ -77,7 +77,7 @@ class AnyMapperTest extends Specification {
         ]
 
         when:
-        def result = AnyMapper.transform(source, mapping)
+        def result = AnyMapperTransformPrototype.transform(source, mapping)
 
         then:
         println result
@@ -97,7 +97,7 @@ class AnyMapperTest extends Specification {
                        'key1.key2.key4': ['destination': 'test.x']]
 
         when:
-        def result = AnyMapper.transform(source, mapping)
+        def result = AnyMapperTransformPrototype.transform(source, mapping)
 
         then:
         println result
@@ -118,7 +118,7 @@ class AnyMapperTest extends Specification {
                        'key1.key2.key4': ['destination': 'test.x']]
 
         when:
-        def result = AnyMapper.transform(source, mapping)
+        def result = AnyMapperTransformPrototype.transform(source, mapping)
 
         then:
         println result
