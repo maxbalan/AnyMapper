@@ -107,7 +107,7 @@ class AnyMapperMappingPointsSpec extends Specification {
         assert result.mappingPoints[0].sourcePath().contains('key1')
         assert result.mappingPoints[0].sourcePath().contains('key2')
         assert result.mappingPoints[0].sourcePath().contains('key3')
-        assert result.mappingPoints[0].destinationPath().size() ==2
+        assert result.mappingPoints[0].destinationPath().size() == 2
         assert result.mappingPoints[0].destinationPath().contains('test')
         assert result.mappingPoints[0].destinationPath().contains('list')
         assert result.mappingPoints[0].isList() == true
@@ -115,13 +115,13 @@ class AnyMapperMappingPointsSpec extends Specification {
         assert result.mappingPoints[0].children().size() == 2
         assert result.mappingPoints[0].children()[0].sourcePath().size() == 1
         assert result.mappingPoints[0].children()[0].sourcePath().contains('lk2')
-        assert result.mappingPoints[0].children()[0].destinationPath().size() ==2
+        assert result.mappingPoints[0].children()[0].destinationPath().size() == 2
         assert result.mappingPoints[0].children()[0].destinationPath().contains('test')
         assert result.mappingPoints[0].children()[0].destinationPath().contains('k2')
         assert result.mappingPoints[0].children()[0].isList() == false
         assert result.mappingPoints[0].children()[1].sourcePath().size() == 1
         assert result.mappingPoints[0].children()[1].sourcePath().contains('lk1')
-        assert result.mappingPoints[0].children()[1].destinationPath().size() ==2
+        assert result.mappingPoints[0].children()[1].destinationPath().size() == 2
         assert result.mappingPoints[0].children()[1].destinationPath().contains('test')
         assert result.mappingPoints[0].children()[1].destinationPath().contains('k1')
         assert result.mappingPoints[0].children()[1].isList() == false

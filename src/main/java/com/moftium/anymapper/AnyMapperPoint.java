@@ -2,7 +2,6 @@ package com.moftium.anymapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 public class AnyMapperPoint {
@@ -11,14 +10,14 @@ public class AnyMapperPoint {
     private final boolean isList;
     private final List<AnyMapperPoint> children;
 
-    public AnyMapperPoint(String[] sourcePath, String[] destinationPath, List<AnyMapperPoint> children) {
+    protected AnyMapperPoint(String[] sourcePath, String[] destinationPath, List<AnyMapperPoint> children) {
         this.sourcePath = sourcePath;
         this.destinationPath = destinationPath;
         this.isList = children.size() > 0;
         this.children = children != null ? children : new ArrayList<>();
     }
 
-    public AnyMapperPoint(String[] sourcePath, String[] destinationPath) {
+    protected AnyMapperPoint(String[] sourcePath, String[] destinationPath) {
         this(sourcePath, destinationPath, new ArrayList<>());
     }
 

@@ -1,6 +1,9 @@
 package com.moftium.anymapper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AnyMapperTransform {
 
@@ -11,6 +14,10 @@ public class AnyMapperTransform {
 
         for (AnyMapperPoint point : mappingPoints) {
             Object sourceValue = getValueByPath(source, point.sourcePath());
+
+            if (sourceValue == null) {
+                continue;
+            }
 
             if (point.isList()) {
                 mapList(result, point, sourceValue);
@@ -25,18 +32,19 @@ public class AnyMapperTransform {
 
     @SuppressWarnings("unchecked")
     private static void mapList(Map<String, Object> result, AnyMapperPoint point, Object sourceValue) {
-        List<?> sourceList = (List<?>) sourceValue;
+        if (!(sourceValue instanceof List<?> sourceList)) {
+            return;
+        }
+
         List<Object> transformedList = new ArrayList<>();
 
         for (Object item : sourceList) {
-            if (!(item instanceof Map)) {
+            if (!(item instanceof Map<?, ?> sourceItem)) {
                 continue;
             }
 
-            Map<String, Object> sourceItem = (Map<String, Object>) item;
-
-            var map = transform(sourceItem, point.children());
-            transformedList.add(map);
+            Map<String, Object> childMap = transform((Map<String, Object>) sourceItem, point.children());
+            transformedList.add(childMap);
         }
 
         setValueByPath(result, point.destinationPath(), transformedList);

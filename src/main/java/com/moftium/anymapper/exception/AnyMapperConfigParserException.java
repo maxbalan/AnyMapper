@@ -1,4 +1,4 @@
-package com.moftium.anymapper;
+package com.moftium.anymapper.exception;
 
 public class AnyMapperConfigParserException extends AnyMapperException {
     public AnyMapperConfigParserException(String message) {

@@ -1,5 +1,7 @@
 package com.moftium.anymapper;
 
+import com.moftium.anymapper.exception.AnyMapperConfigParserException;
+
 import java.util.*;
 
 public class AnyMapper {
@@ -33,7 +35,7 @@ public class AnyMapper {
             List<AnyMapperPoint> children = new ArrayList<>();
 
             if (isList) {
-                var conf = new HashMap<>(config);
+                HashMap<String, Object> conf = new HashMap<>(config);
                 conf.remove("type");
                 conf.remove("destination");
 
