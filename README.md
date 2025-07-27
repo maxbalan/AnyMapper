@@ -8,7 +8,9 @@ Use cases
   - Extracting or flattening complex JSON-like maps
   - Structuring data before serialization or persistence
 
+---
 
+TOC
 - [AnyMapper](#anymapper)
     * [✨ Features](#-features)
     * [🔧 Installation](#-installation)
