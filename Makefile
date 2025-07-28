@@ -51,13 +51,11 @@ releaseVersionIncrement: build
 	echo "Incrementing version $$version to $$new_version" && \
  	echo $$new_version > VERSION && \
 	$(GIT) commit -am"[${PROJECT}] increment and release version to [${INCREMENT_TYPE}] $${new_version}" && \
-	$(GIT) push origin master
+	$(GIT) push origin master && \
+	$(GRADLE) publishToMavenLocal jreleaserRelease -PpreviousTag=${VERSION}
 
 releaseConfigDryRun: clean
 	$(GRADLE) jreleaserConfig
-
-releaseMavenRelease: releaseVersionIncrement
-	$(GRADLE) jreleaserRelease
 
 releaseMavenCentral: releaseVersionIncrement
 	$(GRADLE) jreleaserDeploy

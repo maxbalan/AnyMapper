@@ -12,21 +12,20 @@ public class AnyMapperTransform {
 
     @SuppressWarnings("unchecked")
     protected static Map<String, Object> transform(Map<String, Object> source, List<AnyMapperPoint> mappingPoints) {
-        Map<String, Object> result = new HashMap<>();
+        final Map<String, Object> result = new HashMap<>();
 
-        for (AnyMapperPoint point : mappingPoints) {
-            Object sourceValue = getValueByPath(source, point.sourcePath());
+        mappingPoints.parallelStream()
+                .forEach(point -> {
+                    Object sourceValue = getValueByPath(source, point.sourcePath());
 
-            if (sourceValue == null) {
-                continue;
-            }
-
-            if (point.isList()) {
-                mapList(result, point, sourceValue);
-            } else {
-                setValueByPath(result, point.destinationPath(), sourceValue);
-            }
-        }
+                    if (sourceValue != null) {
+                        if (point.isList()) {
+                            mapList(result, point, sourceValue);
+                        } else {
+                            setValueByPath(result, point.destinationPath(), sourceValue);
+                        }
+                    }
+                });
 
         return result;
     }

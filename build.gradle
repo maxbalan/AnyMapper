@@ -15,6 +15,7 @@ repositories {
 }
 
 dependencies {
+    //testing
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.0'
     testImplementation 'org.spockframework:spock-core:2.4-M6-groovy-4.0'
 }
@@ -90,6 +91,7 @@ jreleaser {
 
     release {
         github {
+            dryrun = true
             enabled = true
             repoOwner = 'maxbalan'
             name = 'AnyMapper'
@@ -98,13 +100,18 @@ jreleaser {
             sign = true
             branch = 'master'
             uploadAssets = 'ALWAYS'
+            previousTagName='v1.0.0'
             changelog {
-                enabled = true
-                external = './CHANGELOG.md'
+                links = true
+                previousTagName = "v{{previousTag}}"
                 formatted = 'ALWAYS'
+                format = '- {{commitShortHash}} {{commitTitle}}'
                 append {
                     enabled = true
                     target = 'CHANGELOG.md'
+                }
+                contributors {
+                    enabled = false
                 }
             }
         }
@@ -113,7 +120,7 @@ jreleaser {
     deploy {
         maven {
             mavenCentral {
-                anymapper {
+                sonatype {
                     sign = true
                     sourceJar = true
                     javadocJar = true

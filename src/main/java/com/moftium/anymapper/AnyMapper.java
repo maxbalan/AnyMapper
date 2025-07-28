@@ -56,7 +56,7 @@ public class AnyMapper {
                 conf.remove("type");
                 conf.remove("destination");
 
-                children = parseMapping(conf, nestingLevel+1);
+                children = parseMapping(conf, nestingLevel + 1);
             }
 
             result.add(new AnyMapperPoint(sourcePath, destinationPath, children));
