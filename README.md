@@ -94,7 +94,7 @@ when transforming a map, the only configuration needed is the `destination` fiel
     id:
       destination: identifier
     address.firstLine:
-      destination: record.location
+      destination: record.location.address
     dateLastActivity:
       destination: record.timestamps.lastSeen
     memberIds:
