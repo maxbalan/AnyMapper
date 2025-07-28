@@ -10,28 +10,39 @@ Use cases
 
 ---
 
-TOC
+# Table of contents
+
 - [AnyMapper](#anymapper)
-    * [✨ Features](#-features)
-    * [🔧 Installation](#-installation)
-        + [Gradle](#gradle)
-        + [Maven](#maven)
-    * [📦 Usage](#-usage)
-        + [Example Input](#example-input)
-        + [Mapping Configuration](#mapping-configuration)
-        + [Transformation](#transformation)
-        + [Result](#result)
-    * [Behavior](#-behavior)
-        + [If `type=list` is not specified](#if-typelist-is-not-specified)
-        + [List-to-Map and Map-to-List conversion is **not supported**](#list-to-map-and-map-to-list-conversion-is-not-supported)
-    * [🔍 Advanced Usage: Nested Lists](#-advanced-usage-nested-lists)
-    * [📜 License](#-license)
-    * [👤 Maintainer](#-maintainer)
-    * [🤝 Contributing](#-contributing)
+- [Table of contents](#table-of-contents)
+    - [Features](#features)
+    - [Installation](#installation)
+        - [Maven](#maven)
+        - [Gradle](#gradle)
+    - [Behavior](#behavior)
+        - [Map Transformation](#map-transformation)
+            - [Input](#input)
+            - [Configuration](#configuration)
+            - [Result](#result)
+        - [List Transformation](#list-transformation)
+            - [Input](#input)
+            - [Configuration](#configuration)
+            - [Result](#result)
+        - [Like-for-Like Transformation](#like-for-like-transformation)
+            - [Input](#input)
+            - [Configuration](#configuration)
+            - [Result](#result)
+    - [Usage](#usage)
+        - [Example](#example)
+            - [Input](#input)
+            - [Configuration](#configuration)
+            - [Integration](#integration)
+                - [toMap](#tomap)
+    - [License](#license)
+    - [🤝 Contributing](#-contributing)
 
 ---
 
-## ✨ Features
+## Features
 
 - Declarative transformation mapping
 - Supports nested maps and lists
@@ -41,156 +52,311 @@ TOC
 
 ---
 
-## 🔧 Installation
+## Installation
 
-Maven Central: [LINK]()
-
-### Gradle
-
-```groovy
-dependencies {
-    implementation 'com.moftium:anymapper:1.0.0'
-}
-```
+Maven Central: [LINK](https://central.sonatype.com/artifact/com.moftium/anymapper)
 
 ### Maven
 
 ```xml
 <dependency>
-  <groupId>com.moftium</groupId>
-  <artifactId>anymapper</artifactId>
-  <version>1.0.0</version>
+    <groupId>com.moftium</groupId>
+    <artifactId>anymapper</artifactId>
+    <version>1.0.0</version>
 </dependency>
 ```
+    
+### Gradle
 
----
-
-## 📦 Usage
-
-### Example Input
-
-```java
-Map<String, Object> input = Map.of(
-    "user", Map.of(
-        "name", "Max",
-        "info", Map.of(
-            "email", "max@example.com",
-            "roles", List.of("admin", "editor")
-        )
-    )
-);
-```
-
-### Mapping Configuration
-
-```java
-Map<String, Object> config = Map.of(
-    "user.name", Map.of("destination", "profile.fullName"),
-    "user.info.email", Map.of("destination", "profile.contact.email"),
-    "user.info.roles", Map.of(
-        "destination", "profile.access.roles",
-        "type", "list"
-    )
-);
-```
-
-### Transformation
-
-```java
-AnyMapper anyMapper = new AnyMapper(config);
-Map<String, Object> output = anyMapper.transform(input);
-```
-
-### Result
-
-```java
-{
-  "profile": {
-    "fullName": "Max",
-    "contact": {
-      "email": "max@example.com"
-    },
-    "access": {
-      "roles": ["admin", "editor"]
-    }
-  }
-}
+```groovy
+    implementation group: 'com.moftium', name: 'anymapper', version: '1.0.0'
 ```
 
 ---
 
 ## Behavior
+### Map Transformation
+when transforming a map, the only configuration needed is the `destination` field.
 
-### If `type=list` is not specified
-The value is **treated as-is**, and will be **copied over** even if it's a list or map. This means:
-```yaml
-type: list
-```
-… is required to transform each element individually.
-
-### List-to-Map and Map-to-List conversion is **not supported**
-Type must be preserved between source and destination.
-
----
-
-## 🔍 Advanced Usage: Nested Lists
-
-```java
-// input data
-Map<String, Object> input = Map.of(
-        "data", Map.of(
-                "items", List.of(
-                        Map.of("title", "Temperature", "value", 23),
-                        Map.of("title", "Humidity", "value", 60)
-                )
-        )
-);
-
-// mapping configuration
-Map<String, Object> config = Map.of(
-    "data.items", Map.of(
-        "destination", "payload.elements",
-        "type", "list",
-        "title", Map.of("destination", "header.title"),
-        "value", Map.of("destination", "metrics.value")
-    )
-);
-
-// transformation
-AnyMapper anyMapper = new AnyMapper(config);
-Map<String, Object> output = anyMapper.transform(input);
-```
-
-Result:
+#### Input
 ```json
 {
-  "payload": {
-    "elements": [
+  "id": "5abbe4b7ddc1b351ef961414",
+  "dateLastActivity": "2019-09-16T16:19:17.156Z",
+  "address": {
+    "firstLine": "42 X Street"
+  }
+}
+```
+
+#### Configuration
+```yaml
+    id:
+      destination: identifier
+    address.firstLine:
+      destination: record.location
+    dateLastActivity:
+      destination: record.timestamps.lastSeen
+    memberIds:
+      destination: record.members
+```
+
+#### Result
+```json
+{
+  "identifier": "5abbe4b7ddc1b351ef961414",
+  "record": {
+    "timestamps": {
+      "lastSeen": "2019-09-16T16:19:17.156Z"
+    },
+    "location": {
+      "address": "42 X Street"
+    }
+  }
+}
+```
+
+### List Transformation
+when transforming a list, you have the flexibility to transform the structure of the elements in the list, the same way you have it during a map transformation, next to the `destination` field you need to specify `type: list`
+
+#### Input
+```json
+{
+  "id": "5abbe4b7ddc1b351ef961414",
+  "dateLastActivity": "2019-09-16T16:19:17.156Z",
+  "memberIds": [
+    {
+      "id": "mem_01",
+      "name":"John Doe"
+    },
+    {
+      "id": "mem_02",
+      "name":"Jane Doe"
+    }
+  ]
+}
+```
+
+#### Configuration
+```yaml
+    id:
+      destination: identifier
+    dateLastActivity:
+      destination: record.timestamps.lastSeen
+    memberIds:
+      destination: record.members
+      type: list
+      id:
+        destination: memberId
+      name:
+        destination: details.name
+```
+
+#### Result
+```json
+{
+  "identifier": "5abbe4b7ddc1b351ef961414",
+  "record": {
+    "timestamps": {
+      "lastSeen": "2019-09-16T16:19:17.156Z"
+    },
+    "members": [
       {
-        "header": {
-          "title": "Temperature"
-        },
-        "metrics": {
-          "value": 23
+        "memberId": "mem_01",
+        "details": {
+          "name": "John Doe"
         }
       },
       {
-        "header": {
-          "title": "Humidity"
-        },
-        "metrics": {
-          "value": 60
+        "memberId": "mem_02",
+        "details": {
+          "name": "Jane Doe"
         }
       }
     ]
   }
 }
 ```
-This will transform each element in the `data.items` list independently using the sub-mapping provided.
+
+### Like-for-Like Transformation
+sometimes you don't want to remap the entire structure and don't need to change the key values, the only level which is mandatory to map is the root level
+
+#### Input
+```json
+{
+  "id": "5abbe4b7ddc1b351ef961414",
+  "timestamps": {
+    "lastSeen": "2019-09-16T16:19:17.156Z"
+  },
+  "state": {
+    "options": [
+      "completed",
+      "in_progress",
+      "not_started"
+    ]
+  },
+  "memberIds": [
+    {
+      "id": "mem_01",
+      "name": "John Doe"
+    },
+    {
+      "id": "mem_02",
+      "name": "Jane Doe"
+    }
+  ]
+}
+```
+
+#### Configuration
+```yaml
+    id:
+      destination: identifier
+    timestamps:
+      destination: record.timestamps
+    state:
+      destination: record.state
+    memberIds:
+      destination: memberIds
+```
+
+#### Result
+```json
+{
+  "identifier": "5abbe4b7ddc1b351ef961414",
+  "record": {
+    "timestamps": {
+      "lastSeen": "2019-09-16T16:19:17.156Z"
+    },
+    "state": {
+      "options": [
+        "completed",
+        "in_progress",
+        "not_started"
+      ]
+    }
+  },
+  "memberIds": [
+    {
+      "id": "mem_01",
+      "name": "John Doe"
+    },
+    {
+      "id": "mem_02",
+      "name": "Jane Doe"
+    }
+  ]
+}
+```
 
 ---
 
-## 📜 License
+## Usage
+AnyMapper is ideal when you need a clean separation between external and internal data structures without writing boilerplate transformation code.
+
+Common scenarios include:
+- Intermediate integration layers: You're integrating with multiple third-party services, each returning different payload structures. Use AnyMapper to convert them into a normalized internal format that your system consistently works with.
+- Internal to external response shaping: You want to hide internal details, restructure deeply nested objects, or omit sensitive data before sending responses to customers or frontend applications.
+
+### Example
+
+#### Input
+consider the bellow json your app receives
+
+```json
+{
+  "id": "5abbe4b7ddc1b351ef961414",
+  "address": "42 X Street",
+  "dateLastActivity": "2019-09-16T16:19:17.156Z",
+  "location": true,
+  "votes": 2154,
+  "badges": {
+    "attachmentsByType": {
+      "meta": {
+        "project": 12,
+        "task": 34
+      }
+    }
+  },
+  "checkItemStates": [
+    "completed",
+    "in_progress",
+    "not_started"
+  ],
+  "idChecklists": [
+    { "id": "cl_01" },
+    { "id": "cl_02" }
+  ],
+  "idLabels": [
+    {
+      "id": "lab_01",
+      "labelName": "Important",
+      "idMembers": ["mem_01"],
+      "cover": {
+        "color": "yellow",
+        "idUploadedBackground": true,
+        "coversIds": ["cov_01"]
+      }
+    }
+  ]
+}
+```
+
+#### Configuration
+the bellow yaml represents how would you configure a mapping of input above into your external response structure
+
+```yaml
+id:
+  destination: record.identifier
+
+address:
+  destination: record.location.address
+
+dateLastActivity:
+  destination: record.timestamps.lastSeen
+
+badges.attachmentsByType.meta.project:
+  destination: record.metadata.projectId
+
+badges.attachmentsByType.meta.task:
+  destination: record.metadata.taskId
+
+checkItemStates:
+  destination: record.checks.statuses
+  
+idChecklists:
+  destination: record.checks.checklists
+  type: list
+  id:
+    destination: checklistId
+    
+idLabels:
+  destination: record.labels
+  type: list
+  id:
+    destination: id
+  labelName:
+    destination: name
+  idMembers:
+    destination: members
+  cover.color:
+    destination: visual.color
+  cover.coversIds:
+    destination: visual.covers
+```
+
+#### Integration
+an example on how would you instantiate AnyMapper template and execute a transformation
+
+##### toMap
+```java
+    AnyMapper anyMapper = new AnyMapper(config);
+    Map<String, Object> output = anyMapper.transform(input);
+```
+
+---
+
+## License
 
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
 

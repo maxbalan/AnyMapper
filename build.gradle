@@ -8,7 +8,7 @@ plugins {
 }
 
 group = 'com.moftium'
-version = '1.0.0'
+version = file("VERSION").text.trim()
 
 repositories {
     mavenCentral()
@@ -82,26 +82,41 @@ jreleaser {
     signing {
         active = 'ALWAYS'
         armored = true
-    }
-    deploy {
-        maven {
-            mavenCentral {
-                sonatype {
-                    active = 'ALWAYS'
-                    url = 'https://central.sonatype.com/api/v1/publisher'
-                    stagingRepository('build/staging-deploy')
-                }
-            }
-        }
-    }
-}
-
-jreleaser {
-    signing {
-        active = 'ALWAYS'
-        armored = true
+        verify = false
         mode = 'FILE'
         publicKey = System.getenv("PGP_SIGN_KEY_PUB")
         secretKey = System.getenv("PGP_SIGN_KEY_PRIV")
+    }
+
+    release {
+        github {
+            repoOwner = 'maxbalan'
+            name = 'AnyMapper'
+            tagName = "v{{projectVersion}}"
+            releaseName = "v{{projectVersion}}"
+            sign = true
+            branch = 'master'
+            uploadAssets = 'ALWAYS'
+            changelog {
+                enabled = true
+            }
+        }
+    }
+
+    deploy {
+        maven {
+            mavenCentral {
+                anymapper {
+                    sign = true
+                    sourceJar = true
+                    javadocJar = true
+                    maxRetries = 10
+                    retryDelay = 5
+                    active = 'ALWAYS'
+                    url = 'https://central.sonatype.com/api/v1/publisher'
+                    stagingRepository('target/staging-deploy')
+                }
+            }
+        }
     }
 }
