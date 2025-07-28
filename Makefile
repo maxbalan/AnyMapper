@@ -15,6 +15,7 @@ GIT=git
 # ---------------------------------VERSION---------------------------------------------
 # container release version
 VERSION=$(shell cat VERSION)
+NEW_VERSION=$(shell ./resources/scripts/version_increment.sh ${VERSION} ${INCREMENT_TYPE})
 
 # container release build
 RELEASE=$(shell cat RELEASE)
@@ -39,24 +40,27 @@ clean:
 
 # application build
 .PHONY: build
-build: clean
+build:
 	$(GRADLE) build
 
 releaseVersionIncrement: build
 	if [ -z ${INCREMENT_TYPE} ]; then echo "FATAL: ENV INCREMENT_TYPE must be defined."; exit 2; fi
+	if [ -z ${VERSION} ]; then echo "FATAL: ENV VERSION must be defined."; exit 2; fi
+	if [ -z ${NEW_VERSION} ]; then echo "FATAL: ENV NEW_VERSION must be defined."; exit 2; fi
 
-	@new_version=$(shell ./resources/scripts/version_increment.sh ${VERSION} ${INCREMENT_TYPE}) && \
+	mkdir -p ./target/deploy && \
 	echo "Version: ${VERSION}" && \
-	echo "New Version: $${new_version}" && \
-	echo "Incrementing version $$version to $$new_version" && \
- 	echo $$new_version > VERSION && \
-	$(GIT) commit -am"[${PROJECT}] increment and release version to [${INCREMENT_TYPE}] $${new_version}" && \
-	$(GIT) push origin master && \
-	$(GRADLE) publishToMavenLocal jreleaserRelease -PpreviousTag=${VERSION}
+	echo "New Version: ${NEW_VERSION}" && \
+	echo "Incrementing version '${VERSION}' to '${NEW_VERSION}'" && \
+	echo "${NEW_VERSION}" > VERSION && \
+	$(GRADLE) clean build publishToMavenLocal jreleaserRelease -PpreviousTag=${VERSION} && \
+	$(GIT) commit -am"[${INCREMENT_TYPE}] increment and release version [${NEW_VERSION}]" && \
+	$(GIT) push origin master
 
 releaseConfigDryRun: clean
 	$(GRADLE) jreleaserConfig
 
 releaseMavenCentral: releaseVersionIncrement
+	rm -rf ./target/deploy
 	$(GRADLE) jreleaserDeploy
 
