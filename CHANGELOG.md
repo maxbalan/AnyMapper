@@ -2,6 +2,7 @@
 
 ## Changelog
 
+- [51da657](https://github.com/maxbalan/AnyMapper/commits/51da657) [MINOR] increment and release version [1.1.0]
 - [414f069](https://github.com/maxbalan/AnyMapper/commits/414f069) [MINOR] increment and release version [1.1.0]
 - [aff596b](https://github.com/maxbalan/AnyMapper/commits/aff596b) add parallel processing of the mapping template
 - [111b5f6](https://github.com/maxbalan/AnyMapper/commits/111b5f6) update makefile to update the version
@@ -12,8 +13,6 @@
 - [c8df31e](https://github.com/maxbalan/AnyMapper/commits/c8df31e) fix readme
 - [9392c79](https://github.com/maxbalan/AnyMapper/commits/9392c79) fix readme example
 - [9f3bc78](https://github.com/maxbalan/AnyMapper/commits/9f3bc78) Improvements
-
-
 
 ## [v1.0.0]
 
