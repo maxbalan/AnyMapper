@@ -90,6 +90,7 @@ jreleaser {
 
     release {
         github {
+            enabled = true
             repoOwner = 'maxbalan'
             name = 'AnyMapper'
             tagName = "v{{projectVersion}}"
@@ -99,6 +100,12 @@ jreleaser {
             uploadAssets = 'ALWAYS'
             changelog {
                 enabled = true
+                external = './CHANGELOG.md'
+                formatted = 'ALWAYS'
+                append {
+                    enabled = true
+                    target = 'CHANGELOG.md'
+                }
             }
         }
     }
@@ -114,7 +121,7 @@ jreleaser {
                     retryDelay = 5
                     active = 'ALWAYS'
                     url = 'https://central.sonatype.com/api/v1/publisher'
-                    stagingRepository('target/staging-deploy')
+                    stagingRepository('build/staging-deploy')
                 }
             }
         }

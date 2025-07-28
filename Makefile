@@ -33,7 +33,7 @@ help:
 	@echo "    make build                               : Build PRODUCTION docker files"
 	@echo ""
 
-.PHONY: clean build releaseConfigDryRun releaseMavenCentral
+.PHONY: clean build releaseConfigDryRun releaseMavenCentral releaseVersionIncrement
 clean:
 	$(GRADLE) clean
 
@@ -42,8 +42,21 @@ clean:
 build: clean
 	$(GRADLE) build
 
+releaseVersionIncrement: build
+	if [ -z ${INCREMENT_TYPE} ]; then echo "FATAL: ENV INCREMENT_TYPE must be defined."; exit 2; fi
+
+	@new_version=$(shell ./resources/scripts/version_increment.sh ${VERSION} ${INCREMENT_TYPE}) && \
+	echo "Version: ${VERSION}" && \
+	echo "New Version: $${new_version}" && \
+	$(GIT) commit -am"[${PROJECT}] increment and release version to [${INCREMENT_TYPE}] $${new_version}" && \
+	$(GIT) push origin master
+
 releaseConfigDryRun: clean
 	$(GRADLE) jreleaserConfig
 
-releaseMavenCentral: clean
-	$(GRADLE) jreleaserUpload
+releaseMavenRelease: releaseVersionIncrement
+	$(GRADLE) jreleaserRelease
+
+releaseMavenCentral: releaseVersionIncrement
+	$(GRADLE) jreleaserDeploy
+
