@@ -12,37 +12,35 @@ Use cases
 
 # Table of contents
 
-- [AnyMapper](#anymapper)
-- [Table of contents](#table-of-contents)
-    - [Features](#features)
-    - [Installation](#installation)
-        - [Maven](#maven)
-        - [Gradle](#gradle)
-    - [Behavior](#behavior)
-        - [Map Transformation](#map-transformation)
-            - [Input](#input)
-            - [Configuration](#configuration)
-            - [Result](#result)
-        - [List Transformation](#list-transformation)
-            - [Input](#input)
-            - [Configuration](#configuration)
-            - [Result](#result)
-        - [Like-for-Like Transformation](#like-for-like-transformation)
-            - [Input](#input)
-            - [Configuration](#configuration)
-            - [Result](#result)
-    - [Usage](#usage)
-        - [Example](#example)
-            - [Input](#input)
-            - [Configuration](#configuration)
-            - [Integration](#integration)
-                - [toMap](#tomap)
-    - [License](#license)
-    - [🤝 Contributing](#-contributing)
+- [Features](#features)
+- [Installation](#installation)
+    - [Maven](#maven)
+    - [Gradle](#gradle)
+- [Integration](#integration)
+    - [toMap](#tomap)
+- [Usage](#usage)
+    - [Map Transformation](#map-transformation)
+        - [Input](#input)
+        - [Configuration](#configuration)
+        - [Result](#result)
+    - [List Transformation](#list-transformation)
+        - [Input](#input)
+        - [Configuration](#configuration)
+        - [Result](#result)
+    - [Like-for-Like Transformation](#like-for-like-transformation)
+        - [Input](#input)
+        - [Configuration](#configuration)
+        - [Result](#result)
+    - [Complex Example](#complex-example)
+        - [Input](#input)
+        - [Configuration](#configuration)
+        - [Result](#result)
+- [License](#license)
+- [🤝 Contributing](#-contributing)
 
 ---
 
-## Features
+# Features
 
 - Declarative transformation mapping
 - Supports nested maps and lists
@@ -52,7 +50,7 @@ Use cases
 
 ---
 
-## Installation
+# Installation
 
 Maven Central: [LINK](https://central.sonatype.com/artifact/com.moftium/anymapper)
 
@@ -74,11 +72,28 @@ Maven Central: [LINK](https://central.sonatype.com/artifact/com.moftium/anymappe
 
 ---
 
-## Behavior
-### Map Transformation
+# Integration
+an example on how would you instantiate AnyMapper template and execute a transformation
+
+## toMap
+```java
+    AnyMapper anyMapper = new AnyMapper(config);
+    Map<String, Object> output = anyMapper.transform(input);
+```
+
+---
+
+# Usage
+AnyMapper is ideal when you need a clean separation between external and internal data structures without writing boilerplate transformation code.
+
+Common scenarios include:
+- Intermediate integration layers: You're integrating with multiple third-party services, each returning different payload structures. Use AnyMapper to convert them into a normalized internal format that your system consistently works with.
+- Internal to external response shaping: You want to hide internal details, restructure deeply nested objects, or omit sensitive data before sending responses to customers or frontend applications.
+
+## Map Transformation
 when transforming a map, the only configuration needed is the `destination` field.
 
-#### Input
+### Input
 ```json
 {
   "id": "5abbe4b7ddc1b351ef961414",
@@ -89,7 +104,7 @@ when transforming a map, the only configuration needed is the `destination` fiel
 }
 ```
 
-#### Configuration
+### Configuration
 ```yaml
     id:
       destination: identifier
@@ -101,7 +116,7 @@ when transforming a map, the only configuration needed is the `destination` fiel
       destination: record.members
 ```
 
-#### Result
+### Result
 ```json
 {
   "identifier": "5abbe4b7ddc1b351ef961414",
@@ -116,10 +131,10 @@ when transforming a map, the only configuration needed is the `destination` fiel
 }
 ```
 
-### List Transformation
+## List Transformation
 when transforming a list, you have the flexibility to transform the structure of the elements in the list, the same way you have it during a map transformation, next to the `destination` field you need to specify `type: list`
 
-#### Input
+### Input
 ```json
 {
   "id": "5abbe4b7ddc1b351ef961414",
@@ -137,7 +152,7 @@ when transforming a list, you have the flexibility to transform the structure of
 }
 ```
 
-#### Configuration
+### Configuration
 ```yaml
     id:
       destination: identifier
@@ -152,7 +167,7 @@ when transforming a list, you have the flexibility to transform the structure of
         destination: details.name
 ```
 
-#### Result
+### Result
 ```json
 {
   "identifier": "5abbe4b7ddc1b351ef961414",
@@ -178,10 +193,10 @@ when transforming a list, you have the flexibility to transform the structure of
 }
 ```
 
-### Like-for-Like Transformation
+## Like-for-Like Transformation
 sometimes you don't want to remap the entire structure and don't need to change the key values, the only level which is mandatory to map is the root level
 
-#### Input
+### Input
 ```json
 {
   "id": "5abbe4b7ddc1b351ef961414",
@@ -208,7 +223,7 @@ sometimes you don't want to remap the entire structure and don't need to change 
 }
 ```
 
-#### Configuration
+### Configuration
 ```yaml
     id:
       destination: identifier
@@ -220,7 +235,7 @@ sometimes you don't want to remap the entire structure and don't need to change 
       destination: memberIds
 ```
 
-#### Result
+### Result
 ```json
 {
   "identifier": "5abbe4b7ddc1b351ef961414",
@@ -251,16 +266,9 @@ sometimes you don't want to remap the entire structure and don't need to change 
 
 ---
 
-## Usage
-AnyMapper is ideal when you need a clean separation between external and internal data structures without writing boilerplate transformation code.
+## Complex Example
 
-Common scenarios include:
-- Intermediate integration layers: You're integrating with multiple third-party services, each returning different payload structures. Use AnyMapper to convert them into a normalized internal format that your system consistently works with.
-- Internal to external response shaping: You want to hide internal details, restructure deeply nested objects, or omit sensitive data before sending responses to customers or frontend applications.
-
-### Example
-
-#### Input
+### Input
 consider the bellow json your app receives
 
 ```json
@@ -302,7 +310,7 @@ consider the bellow json your app receives
 }
 ```
 
-#### Configuration
+### Configuration
 the bellow yaml represents how would you configure a mapping of input above into your external response structure
 
 ```yaml
@@ -345,23 +353,49 @@ idLabels:
     destination: visual.covers
 ```
 
-#### Integration
-an example on how would you instantiate AnyMapper template and execute a transformation
-
-##### toMap
-```java
-    AnyMapper anyMapper = new AnyMapper(config);
-    Map<String, Object> output = anyMapper.transform(input);
+### Result
+```json
+{
+  "record": {
+    "identifier": "5abbe4b7ddc1b351ef961414",
+    "metadata": {
+      "projectId": 12,
+      "taskId": 34
+    },
+    "checks": {
+      "checklists": [
+        { "checklistId": "cl_01" },
+        { "checklistId": "cl_02" }
+      ],
+      "statuses": ["completed", "in_progress", "not_started"]
+    },
+    "timestamps": {
+      "lastSeen": "2019-09-16T16:19:17.156Z"
+    },
+    "location": {
+      "address": "42 Oxford Street"
+    },
+    "labels": [
+      {
+        "members": ["mem_01"],
+        "name": "Important",
+        "visual": {
+          "color": "yellow",
+          "covers": ["cov_01"]
+        },
+        "id": "lab_01"
+      }
+    ]
+  }
+}
 ```
 
----
-
-## License
+# License
 
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
 
 ---
 
-## 🤝 Contributing
+# 🤝 Contributing
 
 PRs are welcome. Please open issues or suggestions to help improve this utility.
