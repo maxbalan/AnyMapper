@@ -48,6 +48,8 @@ releaseVersionIncrement: build
 	@new_version=$(shell ./resources/scripts/version_increment.sh ${VERSION} ${INCREMENT_TYPE}) && \
 	echo "Version: ${VERSION}" && \
 	echo "New Version: $${new_version}" && \
+	echo "Incrementing version $$version to $$new_version" && \
+ 	echo $$new_version > VERSION && \
 	$(GIT) commit -am"[${PROJECT}] increment and release version to [${INCREMENT_TYPE}] $${new_version}" && \
 	$(GIT) push origin master
 
