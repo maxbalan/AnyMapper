@@ -55,6 +55,7 @@ releaseVersionIncrement: build
 	echo "${NEW_VERSION}" > VERSION && \
 	$(GRADLE) clean build publishToMavenLocal jreleaserRelease -PpreviousTag=${VERSION} && \
 	$(GIT) commit -am"[${INCREMENT_TYPE}] increment and release version [${NEW_VERSION}]" && \
+	$(GIT) tag ${NEW_VERSION} && \
 	$(GIT) push origin master
 
 releaseConfigDryRun: clean
