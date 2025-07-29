@@ -35,6 +35,24 @@ tasks.withType(Javadoc) {
 
 test {
     useJUnitPlatform()
+    exclude(['**/performance/**'])
+}
+
+tasks.register('benchmarkTest', Test) {
+    useJUnitPlatform()
+    description = 'Runs benchmark tests only (e.g., performance specs)'
+
+    // Filter by package or class
+    include '**/performance/**'
+
+    filter {
+        includeTestsMatching 'com.moftium.anymapper.performance.*'
+    }
+
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+    }
 }
 
 publishing {

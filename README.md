@@ -390,6 +390,19 @@ idLabels:
 }
 ```
 
+---
+
+# Performance
+
+performance test: [Link](src/test/groovy/com/moftium/anymapper/performance)
+
+## Map
+![chart](./resources/benchmark/benchmark_map.png)
+
+## List
+![chart](./resources/benchmark/benchmark_list.png)
+
+---
 # License
 
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
