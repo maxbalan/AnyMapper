@@ -48,12 +48,14 @@ releaseVersionIncrement: build
 	if [ -z ${VERSION} ]; then echo "FATAL: ENV VERSION must be defined."; exit 2; fi
 	if [ -z ${NEW_VERSION} ]; then echo "FATAL: ENV NEW_VERSION must be defined."; exit 2; fi
 
-	mkdir -p ./target/deploy && \
 	echo "Version: ${VERSION}" && \
 	echo "New Version: ${NEW_VERSION}" && \
 	echo "Incrementing version '${VERSION}' to '${NEW_VERSION}'" && \
 	echo "${NEW_VERSION}" > VERSION && \
-	$(GRADLE) clean build publishToMavenLocal jreleaserRelease -PpreviousTag=${VERSION} && \
+	$(GRADLE) jreleaserConfig && \
+	$(GRADLE) clean && \
+	$(GRADLE) publish && \
+	$(GRADLE) jreleaserRelease -PpreviousTag=${VERSION} && \
 	$(GIT) commit -am"[${INCREMENT_TYPE}] increment and release version [${NEW_VERSION}]" && \
 	$(GIT) push origin master && \
 	$(GIT) tag "v${NEW_VERSION}" && \
@@ -62,7 +64,9 @@ releaseVersionIncrement: build
 releaseConfigDryRun: clean
 	$(GRADLE) jreleaserConfig
 
-releaseMavenCentral: releaseVersionIncrement
-	rm -rf ./target/deploy
+releaseMavenCentral:
+	$(GRADLE) jreleaserConfig
+	$(GRADLE) clean
+	$(GRADLE) publish
 	$(GRADLE) jreleaserDeploy
 

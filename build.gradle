@@ -91,7 +91,6 @@ jreleaser {
 
     release {
         github {
-            dryrun = true
             enabled = true
             repoOwner = 'maxbalan'
             name = 'AnyMapper'
@@ -100,7 +99,7 @@ jreleaser {
             sign = true
             branch = 'master'
             uploadAssets = 'ALWAYS'
-            previousTagName='v1.0.0'
+            previousTagName = 'v{{previousTag}}'
             changelog {
                 links = true
                 previousTagName = "v{{previousTag}}"
@@ -124,11 +123,9 @@ jreleaser {
                     sign = true
                     sourceJar = true
                     javadocJar = true
-                    maxRetries = 10
-                    retryDelay = 5
                     active = 'ALWAYS'
                     url = 'https://central.sonatype.com/api/v1/publisher'
-                    stagingRepository('target/deploy')
+                    stagingRepository('build/staging-deploy')
                 }
             }
         }
