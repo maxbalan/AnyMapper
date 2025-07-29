@@ -50,6 +50,6 @@ class AnyMapperExample extends Specification {
 
         then:
         println result
-        assert result.toString() == '[record:[identifier:5abbe4b7ddc1b351ef961414, metadata:[projectId:12, taskId:34], checks:[checklists:[[checklistId:cl_01], [checklistId:cl_02]], statuses:[completed, in_progress, not_started]], timestamps:[lastSeen:2019-09-16T16:19:17.156Z], location:[address:42 Oxford Street], labels:[[members:[mem_01], name:Important, visual:[color:yellow, covers:[cov_01]], id:lab_01]]]]'
+        assert result.toString().replace("{", "[").replace("}", ']').replace("=", ":") == '[record:[identifier:5abbe4b7ddc1b351ef961414, metadata:[projectId:12, taskId:34], checks:[checklists:[[checklistId:cl_01], [checklistId:cl_02]], statuses:[completed, in_progress, not_started]], timestamps:[lastSeen:2019-09-16T16:19:17.156Z], location:[address:42 Oxford Street], labels:[[members:[mem_01], name:Important, visual:[color:yellow, covers:[cov_01]], id:lab_01]]]]'
     }
 }

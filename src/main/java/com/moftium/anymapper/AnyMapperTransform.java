@@ -1,9 +1,9 @@
 package com.moftium.anymapper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class AnyMapperTransform {
 
@@ -12,20 +12,21 @@ public class AnyMapperTransform {
 
     @SuppressWarnings("unchecked")
     protected static Map<String, Object> transform(Map<String, Object> source, List<AnyMapperPoint> mappingPoints) {
-        final Map<String, Object> result = new HashMap<>();
+        final Map<String, Object> result = new ConcurrentHashMap<>();
+
 
         mappingPoints.parallelStream()
-                .forEach(point -> {
-                    Object sourceValue = getValueByPath(source, point.sourcePath());
+                     .forEach(point -> {
+                         Object sourceValue = getValueByPath(source, point.sourcePath());
 
-                    if (sourceValue != null) {
-                        if (point.isList()) {
-                            mapList(result, point, sourceValue);
-                        } else {
-                            setValueByPath(result, point.destinationPath(), sourceValue);
-                        }
-                    }
-                });
+                         if (sourceValue != null) {
+                             if (point.isList()) {
+                                 mapList(result, point, sourceValue);
+                             } else {
+                                 setValueByPath(result, point.destinationPath(), sourceValue);
+                             }
+                         }
+                     });
 
         return result;
     }
@@ -73,14 +74,14 @@ public class AnyMapperTransform {
     }
 
     @SuppressWarnings("unchecked")
-    private static void setValueByPath(Map<String, Object> map, String[] path, Object value) {
-        Map<String, Object> current = map;
+    private static void setValueByPath(Map<String, Object> result, String[] path, Object value) {
+        Map<String, Object> current = result;
 
         for (int i = 0; i < path.length - 1; i++) {
             String part = path[i];
 
             if (!current.containsKey(part) || !(current.get(part) instanceof Map)) {
-                current.put(part, new HashMap<String, Object>());
+                current.put(part, new ConcurrentHashMap<String, Object>());
             }
 
             current = (Map<String, Object>) current.get(part);
