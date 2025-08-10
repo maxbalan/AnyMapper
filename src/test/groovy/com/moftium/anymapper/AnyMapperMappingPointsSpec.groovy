@@ -92,10 +92,11 @@ class AnyMapperMappingPointsSpec extends Specification {
         given:
         def source = ['key1': ['key2': ['key3': [[lk1: 1], [lk2: 2]],
                                         'key4': 4]]]
-        def mapping = ['key1.key2.key3': [lk1        : ['destination': 'test.k1'],
-                                          lk2        : ['destination': 'test.k2'],
-                                          destination: 'test.list',
-                                          type       : 'list']]
+        def mapping = ['key1.key2.key3': [destination: 'test.list',
+                                          items      : [
+                                                  lk1: [destination: 'test.k1'],
+                                                  lk2: [destination: 'test.k2']
+                                          ]]]
 
         when:
         def result = new AnyMapper(mapping)
@@ -131,13 +132,15 @@ class AnyMapperMappingPointsSpec extends Specification {
         given:
         def source = ['key1': ['key2': ['key3': [[lk1: 1], [lk2: 2], [lk3: [[lk4: 4]]]],
                                         'key4': 4]]]
-        def mapping = ['key1.key2.key3': [lk1        : ['destination': 'test.k1'],
-                                          lk2        : ['destination': 'test.k2'],
-                                          destination: 'test.list',
-                                          type       : 'list',
-                                          lk3        : ['destination': 'test.k3',
-                                                        type         : 'list',
-                                                        lk4          : ['destination': 'test.k4']]]]
+        def mapping = ['key1.key2.key3': [destination: 'test.list',
+                                          items      : [
+                                                  lk1: [destination: 'test.k1'],
+                                                  lk2: [destination: 'test.k2'],
+                                                  lk3: [destination: 'test.k3',
+                                                        items: [
+                                                                lk4: [destination: 'test.k4']
+                                                        ]]
+                                          ]]]
 
         when:
         def result = new AnyMapper(mapping)

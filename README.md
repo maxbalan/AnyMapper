@@ -132,7 +132,7 @@ when transforming a map, the only configuration needed is the `destination` fiel
 ```
 
 ## List Transformation
-when transforming a list, you have the flexibility to transform the structure of the elements in the list, the same way you have it during a map transformation, next to the `destination` field you need to specify `type: list`
+when transforming a list, you have the flexibility to transform the structure of the elements in the list, the same way you have it during a map transformation. Next to the `destination` field nest the element mappings under the `items` field
 
 ### Input
 ```json
@@ -160,11 +160,11 @@ when transforming a list, you have the flexibility to transform the structure of
       destination: record.timestamps.lastSeen
     memberIds:
       destination: record.members
-      type: list
-      id:
-        destination: memberId
-      name:
-        destination: details.name
+      items:
+        id:
+          destination: memberId
+        name:
+          destination: details.name
 ```
 
 ### Result
@@ -334,23 +334,23 @@ checkItemStates:
   
 idChecklists:
   destination: record.checks.checklists
-  type: list
-  id:
-    destination: checklistId
-    
+  items:
+    id:
+      destination: checklistId
+
 idLabels:
   destination: record.labels
-  type: list
-  id:
-    destination: id
-  labelName:
-    destination: name
-  idMembers:
-    destination: members
-  cover.color:
-    destination: visual.color
-  cover.coversIds:
-    destination: visual.covers
+  items:
+    id:
+      destination: id
+    labelName:
+      destination: name
+    idMembers:
+      destination: members
+    cover.color:
+      destination: visual.color
+    cover.coversIds:
+      destination: visual.covers
 ```
 
 ### Result
