@@ -12,9 +12,11 @@ public class AnyMapperTransform {
 
     @SuppressWarnings("unchecked")
     protected static Map<String, Object> transform(Map<String, Object> source, List<AnyMapperPoint> mappingPoints) {
-        final Map<String, Object> result = new LinkedHashMap<>(mappingPoints.size());
+        final int size = mappingPoints.size();
+        final Map<String, Object> result = new LinkedHashMap<>(size);
 
-        for (AnyMapperPoint point : mappingPoints) {
+        for (int i = 0; i < size; i++) {
+            AnyMapperPoint point = mappingPoints.get(i);
             Object sourceValue = getValueByPath(source, point.sourcePath());
 
             if (sourceValue != null) {
@@ -37,17 +39,15 @@ public class AnyMapperTransform {
         }
 
         List<?> sourceList = (List<?>) sourceValue;
-        List<Object> transformedList = new ArrayList<>(sourceList.size());
+        int size = sourceList.size();
+        List<Object> transformedList = new ArrayList<>(size);
 
-        for (Object item : sourceList) {
-            if (!(item instanceof Map<?, ?>)) {
-                continue;
+        for (int i = 0; i < size; i++) {
+            Object item = sourceList.get(i);
+            if (item instanceof Map<?, ?>) {
+                Map<String, Object> childMap = transform((Map<String, Object>) item, point.children());
+                transformedList.add(childMap);
             }
-
-            Map<?, ?> sourceItem = (Map<?, ?>) item;
-            Map<String, Object> childMap = transform((Map<String, Object>) sourceItem, point.children());
-
-            transformedList.add(childMap);
         }
 
         setValueByPath(result, point.destinationPath(), transformedList);
@@ -77,7 +77,12 @@ public class AnyMapperTransform {
 
         for (int i = 0; i < path.length - 1; i++) {
             String part = path[i];
-            current = (Map<String, Object>) current.computeIfAbsent(part, k -> new LinkedHashMap<>());
+            Map<String, Object> child = (Map<String, Object>) current.get(part);
+            if (child == null) {
+                child = new LinkedHashMap<>(4);
+                current.put(part, child);
+            }
+            current = child;
         }
 
         current.put(path[path.length - 1], value);
