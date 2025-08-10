@@ -4,8 +4,7 @@ import com.moftium.anymapper.config.AnyMapperConfig;
 import com.moftium.anymapper.exception.AnyMapperConfigParserException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -15,24 +14,24 @@ public class AnyMapper {
     private final AnyMapperConfig config;
 
     public AnyMapper(Map<String, Object> mappingConfig) throws AnyMapperConfigParserException {
-        this.mappingConfig = mappingConfig;
+        this.mappingConfig = Collections.unmodifiableMap(mappingConfig);
         this.config = new AnyMapperConfig(10);
-        this.mappingPoints = parseMapping(mappingConfig, 1);
+        this.mappingPoints = Collections.unmodifiableList(parseMapping(this.mappingConfig, 1));
     }
 
     public AnyMapper(Map<String, Object> mappingConfig, AnyMapperConfig config) throws AnyMapperConfigParserException {
-        this.mappingConfig = mappingConfig;
+        this.mappingConfig = Collections.unmodifiableMap(mappingConfig);
         this.config = config;
-        this.mappingPoints = parseMapping(mappingConfig, 1);
+        this.mappingPoints = Collections.unmodifiableList(parseMapping(this.mappingConfig, 1));
     }
 
     @SuppressWarnings("unchecked")
-    private LinkedList<AnyMapperPoint> parseMapping(Map<String, Object> mappingConfig, int nestingLevel) throws AnyMapperConfigParserException {
+    private List<AnyMapperPoint> parseMapping(Map<String, Object> mappingConfig, int nestingLevel) throws AnyMapperConfigParserException {
         if (nestingLevel > this.config.nestingLevels()) {
             throw new AnyMapperConfigParserException(String.format("config nesting level is > %d", this.config.nestingLevels()));
         }
 
-        LinkedList<AnyMapperPoint> result = new LinkedList<>();
+        List<AnyMapperPoint> result = new ArrayList<>(mappingConfig.size());
 
         for (Map.Entry<String, Object> entry : mappingConfig.entrySet()) {
             if (!(entry.getValue() instanceof Map)) {
@@ -49,7 +48,7 @@ public class AnyMapper {
             String[] destinationPath = ((String) config.get("destination")).split("\\.");
             boolean isList = config.containsKey("items");
 
-            List<AnyMapperPoint> children = new ArrayList<>();
+            List<AnyMapperPoint> children = Collections.emptyList();
 
             if (isList) {
                 Object itemsConfig = config.get("items");
@@ -67,11 +66,11 @@ public class AnyMapper {
     }
 
     public Map<String, Object> mappingConfig() {
-        return new HashMap<>(mappingConfig);
+        return mappingConfig;
     }
 
     public List<AnyMapperPoint> mappingPoints() {
-        return new ArrayList<>(mappingPoints);
+        return mappingPoints;
     }
 
     public Map<String, Object> transform(Map<String, Object> source) {

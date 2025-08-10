@@ -7,7 +7,7 @@ class AnyMapperExample extends Specification {
     def "example mapping call"() {
         given:
         def source = ["id"              : "5abbe4b7ddc1b351ef961414",
-                      "address"         : "42 Oxford Street",
+                      "address"         : "42 X Street",
                       "dateLastActivity": "2019-09-16T16:19:17.156Z",
                       "location"        : true,
                       "votes"           : 2154,
@@ -52,6 +52,6 @@ class AnyMapperExample extends Specification {
 
         then:
         println result
-        assert result.toString().replace("{", "[").replace("}", ']').replace("=", ":") == '[record:[identifier:5abbe4b7ddc1b351ef961414, metadata:[projectId:12, taskId:34], checks:[checklists:[[checklistId:cl_01], [checklistId:cl_02]], statuses:[completed, in_progress, not_started]], timestamps:[lastSeen:2019-09-16T16:19:17.156Z], location:[address:42 Oxford Street], labels:[[members:[mem_01], name:Important, visual:[color:yellow, covers:[cov_01]], id:lab_01]]]]'
+        assert result.toString() == '[record:[identifier:5abbe4b7ddc1b351ef961414, location:[address:42 X Street], timestamps:[lastSeen:2019-09-16T16:19:17.156Z], metadata:[projectId:12, taskId:34], checks:[statuses:[completed, in_progress, not_started], checklists:[[checklistId:cl_01], [checklistId:cl_02]]], labels:[[id:lab_01, name:Important, members:[mem_01], visual:[color:yellow, covers:[cov_01]]]]]]'
     }
 }
