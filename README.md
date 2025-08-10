@@ -396,11 +396,17 @@ idLabels:
 
 performance test: [Link](src/test/groovy/com/moftium/anymapper/performance)
 
-## Map
+## AnyMapper Map
 ![chart](./resources/benchmark/benchmark_map.png)
 
-## List
+## AnyMapper List
 ![chart](./resources/benchmark/benchmark_list.png)
+
+## Jackson Map
+![chart](./resources/benchmark/benchmark_jackson_map.png)
+
+## Jackson List
+![chart](./resources/benchmark/benchmark_jackson_list.png)
 
 ---
 # License

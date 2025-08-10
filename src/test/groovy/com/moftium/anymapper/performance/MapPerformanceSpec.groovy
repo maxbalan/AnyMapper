@@ -1,5 +1,6 @@
 package com.moftium.anymapper.performance
 
+
 import com.moftium.anymapper.AnyMapper
 import spock.lang.Specification
 
@@ -9,7 +10,7 @@ import java.nio.file.Paths
 
 class MapPerformanceSpec extends Specification {
 
-    def "benchmark flat map performance"() {
+    def "benchmark anymapper flat map performance"() {
         given:
         int iterations = 1000
         int warmup = 100
@@ -36,7 +37,9 @@ class MapPerformanceSpec extends Specification {
         when:
         iterations.times {
             long start = System.nanoTime()
+
             mapper.transform(source)
+
             long end = System.nanoTime()
             times << (end - start) / 1_000_000.0
         }

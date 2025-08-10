@@ -58,8 +58,10 @@ testBenchmarkPythonInit:
 
 testBenchmarkPlot:
 	cd $(PYTHON_PLOT_DIR) && \
-	$(PYTHON) $(PYTHON_PLOT_SCRIPT) ../../../../$(BENCHMARK_REPORT_DIR)/data/benchmark_map.csv ../../../../$(BENCHMARK_REPORT_DIR)/benchmark_map.png Map && \
-	$(PYTHON) $(PYTHON_PLOT_SCRIPT) ../../../../$(BENCHMARK_REPORT_DIR)/data/benchmark_list.csv ../../../../$(BENCHMARK_REPORT_DIR)/benchmark_list.png List
+	$(PYTHON) $(PYTHON_PLOT_SCRIPT) ../../../../$(BENCHMARK_REPORT_DIR)/data/benchmark_map.csv ../../../../$(BENCHMARK_REPORT_DIR)/benchmark_map.png "AnyMapper Map" && \
+	$(PYTHON) $(PYTHON_PLOT_SCRIPT) ../../../../$(BENCHMARK_REPORT_DIR)/data/benchmark_list.csv ../../../../$(BENCHMARK_REPORT_DIR)/benchmark_list.png "AnyMapper List" && \
+	$(PYTHON) $(PYTHON_PLOT_SCRIPT) ../../../../$(BENCHMARK_REPORT_DIR)/data/benchmark_jackson_map.csv ../../../../$(BENCHMARK_REPORT_DIR)/benchmark_jackson_map.png "Jackson Map" && \
+	$(PYTHON) $(PYTHON_PLOT_SCRIPT) ../../../../$(BENCHMARK_REPORT_DIR)/data/benchmark_jackson_list.csv ../../../../$(BENCHMARK_REPORT_DIR)/benchmark_jackson_list.png "Jackson List"
 
 .PHONY: releaseVersionIncrement releaseConfigDryRun releaseMavenCentral
 releaseVersionIncrement: build

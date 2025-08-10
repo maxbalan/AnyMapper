@@ -34,7 +34,7 @@ plt.text(
 )
 
 # Labels and formatting
-plt.title("AnyMapper Benchmark "+graph_title)
+plt.title("Benchmark "+graph_title)
 plt.xlabel("Iteration")
 plt.ylabel("Execution Time (ms)")
 plt.grid(True)
