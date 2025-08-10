@@ -1,3 +1,13 @@
+## [v1.2.0]
+
+## Changelog
+
+- [589dcdb](https://github.com/maxbalan/AnyMapper/commits/589dcdb) [add] Optmisation improvement
+- [f3ba7d6](https://github.com/maxbalan/AnyMapper/commits/f3ba7d6) [update] Simplify list mapping with items block (#2)
+- [175a3e4](https://github.com/maxbalan/AnyMapper/commits/175a3e4) [fix] concurrent result map update
+- [c0756e5](https://github.com/maxbalan/AnyMapper/commits/c0756e5) [add] performance tests
+- [9821498](https://github.com/maxbalan/AnyMapper/commits/9821498) [fix] release commands
+
 ## [v1.1.0]
 
 ## Changelog
