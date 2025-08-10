@@ -47,16 +47,17 @@ public class AnyMapper {
             }
 
             String[] destinationPath = ((String) config.get("destination")).split("\\.");
-            boolean isList = config.containsKey("type") && "list".equalsIgnoreCase((String) config.get("type"));
+            boolean isList = config.containsKey("items");
 
             List<AnyMapperPoint> children = new ArrayList<>();
 
             if (isList) {
-                HashMap<String, Object> conf = new HashMap<>(config);
-                conf.remove("type");
-                conf.remove("destination");
+                Object itemsConfig = config.get("items");
+                if (!(itemsConfig instanceof Map)) {
+                    throw new AnyMapperConfigParserException(String.format("config key [%s] 'items' field is not a map", entry.getKey()));
+                }
 
-                children = parseMapping(conf, nestingLevel + 1);
+                children = parseMapping((Map<String, Object>) itemsConfig, nestingLevel + 1);
             }
 
             result.add(new AnyMapperPoint(sourcePath, destinationPath, children));

@@ -108,44 +108,34 @@ class ListPerformanceSpec extends Specification {
 
     private Map<String, Object> nestedMapConfig(int i) {
         [
-                type       : "list",
                 destination: "mappedRootList1",
-                item       : [
-                        destination         : "rootItemDest",
+                items      : [
                         ("key$i".toString()): [
-                                type       : "list",
                                 destination: "nestedListLvl1",
-                                item       : [
-                                        destination         : "nestedItemLvl1",
+                                items      : [
                                         ("key$i".toString()): [
-                                                type       : "list",
                                                 destination: "nestedListLvl2",
-                                                item       : [
-                                                        destination         : "nestedItemLvl2",
+                                                items      : [
                                                         ("key$i".toString()): [
-                                                                type       : "list",
                                                                 destination: "nestedListLvl3",
-                                                                item       : [
-                                                                        destination         : "nestedItemLvl3",
+                                                                items      : [
                                                                         ("key$i".toString()): [
-                                                                                type       : "list",
                                                                                 destination: "nestedListLvl4",
-                                                                                item       : [
-                                                                                        destination: "nestedItemLvl4",
-                                                                                        key1       : [destination: "leafKey1"],
-                                                                                        key2       : [destination: "leafKey2"]
+                                                                                items      : [
+                                                                                        key1: [destination: "leafKey1"],
+                                                                                        key2: [destination: "leafKey2"]
                                                                                 ]
                                                                         ],
-                                                                        key2                : [destination: "flatKeyL4"]
+                                                                        key2: [destination: "flatKeyL4"]
                                                                 ]
                                                         ],
-                                                        key2                : [destination: "flatKeyL3"]
+                                                        key2: [destination: "flatKeyL3"]
                                                 ]
                                         ],
-                                        key2                : [destination: "flatKeyL2"]
+                                        key2: [destination: "flatKeyL2"]
                                 ]
                         ],
-                        key2                : [destination: "flatKeyL1"]
+                        key2: [destination: "flatKeyL1"]
                 ]
         ]
     }

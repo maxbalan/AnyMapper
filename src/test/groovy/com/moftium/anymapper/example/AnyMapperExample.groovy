@@ -34,15 +34,17 @@ class AnyMapperExample extends Specification {
                 "badges.attachmentsByType.meta.task"   : [destination: "record.metadata.taskId"],
                 "checkItemStates"                      : [destination: "record.checks.statuses"],
                 "idChecklists"                         : [destination: "record.checks.checklists",
-                                                          type       : "list",
-                                                          id         : [destination: "checklistId"]],
+                                                          items      : [
+                                                                  id: [destination: "checklistId"]
+                                                          ]],
                 "idLabels"                             : [destination      : "record.labels",
-                                                          type             : "list",
-                                                          id               : [destination: "id"],
-                                                          labelName        : [destination: "name"],
-                                                          idMembers        : [destination: "members"],
-                                                          "cover.color"    : [destination: "visual.color"],
-                                                          "cover.coversIds": [destination: "visual.covers"]]
+                                                          items            : [
+                                                                  id       : [destination: "id"],
+                                                                  labelName: [destination: "name"],
+                                                                  idMembers: [destination: "members"],
+                                                                  "cover.color"    : [destination: "visual.color"],
+                                                                  "cover.coversIds": [destination: "visual.covers"]
+                                                          ]]
         ]
 
         when:
