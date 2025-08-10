@@ -1,8 +1,16 @@
 package com.moftium.anymapper.performance
 
+import com.fasterxml.jackson.annotation.JsonAnySetter
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.core.JsonToken
+import com.fasterxml.jackson.core.ObjectCodec
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.moftium.anymapper.AnyMapper
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import spock.lang.Specification
 
 import java.nio.file.Files
@@ -29,14 +37,14 @@ class JacksonListPerformanceSpec extends Specification {
 
         // Warm-up phase
         1.upto(warmup) {
-            mapper.readValue(jSource, DestinationStructure)
+            mapper.readValue(jSource, SourceStructure)
         }
 
         when:
         iterations.times {
             long start = System.nanoTime()
 
-            mapper.readValue(jSource, DestinationStructure)
+            mapper.readValue(jSource, SourceStructure)
 
             long end = System.nanoTime()
             times << (end - start) / 1_000_000.0 // ms
@@ -108,141 +116,68 @@ class JacksonListPerformanceSpec extends Specification {
         println "Average: ${(times.sum() / times.size()).round(4)} ms"
     }
 
-    static class DestinationStructure {
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    static class SourceStructure {
+        public Node rootList1;
+        public Node rootList2;
+        public Node rootList3;
+        public Node rootList4;
+        public Node rootList5;
+        public Node rootList6;
+        public Node rootList7;
+        public Node rootList8;
+        public Node rootList9;
+        public Node rootList10;
+        public Node rootList11;
+        public Node rootList12;
+        public Node rootList13;
+        public Node rootList14;
+        public Node rootList15;
+        public Node rootList16;
+        public Node rootList17;
+        public Node rootList18;
+        public Node rootList19;
+        public Node rootList20;
+    }
 
-        @JsonProperty("mappedRootList1")
-        private List<MappedRootList1Item> mappedRootList1;
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Node {
+        public String key2;
+        public Map<String, Value> children = new LinkedHashMap<>();
 
-        public List<MappedRootList1Item> getMappedRootList1() {
-            return mappedRootList1;
+        @JsonAnySetter
+        public void putChild(String key, Value value) {
+            if ("key2".equals(key)) return;
+            children.put(key, value);
         }
+    }
 
-        public void setMappedRootList1(List<MappedRootList1Item> mappedRootList1) {
-            this.mappedRootList1 = mappedRootList1;
-        }
+    @JsonDeserialize(using = Value.Deserializer.class)
+    public static class Value {
+        public String string;
+        public List<Node> nodes;
 
-        public static class MappedRootList1Item {
+        public boolean isString() { return string != null; }
+        public boolean isNodes()  { return nodes  != null; }
 
-            @JsonProperty("nestedListLvl1")
-            private List<NestedListLvl1Item> nestedListLvl1;
-
-            @JsonProperty("flatKeyL1")
-            private String flatKeyL1;
-
-            public List<NestedListLvl1Item> getNestedListLvl1() {
-                return nestedListLvl1;
-            }
-
-            public void setNestedListLvl1(List<NestedListLvl1Item> nestedListLvl1) {
-                this.nestedListLvl1 = nestedListLvl1;
-            }
-
-            public String getFlatKeyL1() {
-                return flatKeyL1;
-            }
-
-            public void setFlatKeyL1(String flatKeyL1) {
-                this.flatKeyL1 = flatKeyL1;
-            }
-        }
-
-        public static class NestedListLvl1Item {
-
-            @JsonProperty("nestedListLvl2")
-            private List<NestedListLvl2Item> nestedListLvl2;
-
-            @JsonProperty("flatKeyL2")
-            private String flatKeyL2;
-
-            public List<NestedListLvl2Item> getNestedListLvl2() {
-                return nestedListLvl2;
-            }
-
-            public void setNestedListLvl2(List<NestedListLvl2Item> nestedListLvl2) {
-                this.nestedListLvl2 = nestedListLvl2;
-            }
-
-            public String getFlatKeyL2() {
-                return flatKeyL2;
-            }
-
-            public void setFlatKeyL2(String flatKeyL2) {
-                this.flatKeyL2 = flatKeyL2;
-            }
-        }
-
-        public static class NestedListLvl2Item {
-
-            @JsonProperty("nestedListLvl3")
-            private List<NestedListLvl3Item> nestedListLvl3;
-
-            @JsonProperty("flatKeyL3")
-            private String flatKeyL3;
-
-            public List<NestedListLvl3Item> getNestedListLvl3() {
-                return nestedListLvl3;
-            }
-
-            public void setNestedListLvl3(List<NestedListLvl3Item> nestedListLvl3) {
-                this.nestedListLvl3 = nestedListLvl3;
-            }
-
-            public String getFlatKeyL3() {
-                return flatKeyL3;
-            }
-
-            public void setFlatKeyL3(String flatKeyL3) {
-                this.flatKeyL3 = flatKeyL3;
-            }
-        }
-
-        public static class NestedListLvl3Item {
-
-            @JsonProperty("nestedListLvl4")
-            private List<NestedListLvl4Item> nestedListLvl4;
-
-            @JsonProperty("flatKeyL4")
-            private String flatKeyL4;
-
-            public List<NestedListLvl4Item> getNestedListLvl4() {
-                return nestedListLvl4;
-            }
-
-            public void setNestedListLvl4(List<NestedListLvl4Item> nestedListLvl4) {
-                this.nestedListLvl4 = nestedListLvl4;
-            }
-
-            public String getFlatKeyL4() {
-                return flatKeyL4;
-            }
-
-            public void setFlatKeyL4(String flatKeyL4) {
-                this.flatKeyL4 = flatKeyL4;
-            }
-        }
-
-        public static class NestedListLvl4Item {
-
-            @JsonProperty("leafKey1")
-            private String leafKey1;
-
-            @JsonProperty("leafKey2")
-            private String leafKey2;
-
-            public String getLeafKey1() {
-                return leafKey1;
-            }
-
-            public void setLeafKey1(String leafKey1) {
-                this.leafKey1 = leafKey1;
-            }
-
-            public String getLeafKey2() {
-                return leafKey2;
-            }
-
-            public void setLeafKey2(String leafKey2) {
-                this.leafKey2 = leafKey2;
+        public static class Deserializer extends JsonDeserializer<Value> {
+            @Override
+            public Value deserialize(JsonParser p, DeserializationContext ctx) throws IOException {
+                Value out = new Value();
+                ObjectCodec codec = p.getCodec();
+                JsonToken t = p.currentToken();
+                if (t == JsonToken.VALUE_STRING) {
+                    out.string = p.getValueAsString();
+                    return out;
+                } else if (t == JsonToken.START_ARRAY) {
+                    out.nodes = codec.readValue(p, new TypeReference<List<Node>>() {});
+                    return out;
+                } else if (t == JsonToken.START_OBJECT) {
+                    Node single = codec.readValue(p, Node.class);
+                    out.nodes = Collections.singletonList(single);
+                    return out;
+                }
+                return (Value) ctx.handleUnexpectedToken(Value.class, p);
             }
         }
     }
