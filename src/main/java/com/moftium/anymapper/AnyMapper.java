@@ -5,7 +5,6 @@ import com.moftium.anymapper.exception.AnyMapperConfigParserException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,12 +26,12 @@ public class AnyMapper {
     }
 
     @SuppressWarnings("unchecked")
-    private LinkedList<AnyMapperPoint> parseMapping(Map<String, Object> mappingConfig, int nestingLevel) throws AnyMapperConfigParserException {
+    private List<AnyMapperPoint> parseMapping(Map<String, Object> mappingConfig, int nestingLevel) throws AnyMapperConfigParserException {
         if (nestingLevel > this.config.nestingLevels()) {
             throw new AnyMapperConfigParserException(String.format("config nesting level is > %d", this.config.nestingLevels()));
         }
 
-        LinkedList<AnyMapperPoint> result = new LinkedList<>();
+        List<AnyMapperPoint> result = new ArrayList<>(mappingConfig.size());
 
         for (Map.Entry<String, Object> entry : mappingConfig.entrySet()) {
             if (!(entry.getValue() instanceof Map)) {

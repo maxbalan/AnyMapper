@@ -1,9 +1,9 @@
 package com.moftium.anymapper;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class AnyMapperTransform {
 
@@ -12,21 +12,19 @@ public class AnyMapperTransform {
 
     @SuppressWarnings("unchecked")
     protected static Map<String, Object> transform(Map<String, Object> source, List<AnyMapperPoint> mappingPoints) {
-        final Map<String, Object> result = new ConcurrentHashMap<>();
+        final Map<String, Object> result = new LinkedHashMap<>(mappingPoints.size());
 
+        for (AnyMapperPoint point : mappingPoints) {
+            Object sourceValue = getValueByPath(source, point.sourcePath());
 
-        mappingPoints.parallelStream()
-                     .forEach(point -> {
-                         Object sourceValue = getValueByPath(source, point.sourcePath());
-
-                         if (sourceValue != null) {
-                             if (point.isList()) {
-                                 mapList(result, point, sourceValue);
-                             } else {
-                                 setValueByPath(result, point.destinationPath(), sourceValue);
-                             }
-                         }
-                     });
+            if (sourceValue != null) {
+                if (point.isList()) {
+                    mapList(result, point, sourceValue);
+                } else {
+                    setValueByPath(result, point.destinationPath(), sourceValue);
+                }
+            }
+        }
 
         return result;
     }
@@ -39,7 +37,7 @@ public class AnyMapperTransform {
         }
 
         List<?> sourceList = (List<?>) sourceValue;
-        List<Object> transformedList = new ArrayList<>();
+        List<Object> transformedList = new ArrayList<>(sourceList.size());
 
         for (Object item : sourceList) {
             if (!(item instanceof Map<?, ?>)) {
@@ -79,12 +77,7 @@ public class AnyMapperTransform {
 
         for (int i = 0; i < path.length - 1; i++) {
             String part = path[i];
-
-            if (!current.containsKey(part) || !(current.get(part) instanceof Map)) {
-                current.put(part, new ConcurrentHashMap<String, Object>());
-            }
-
-            current = (Map<String, Object>) current.get(part);
+            current = (Map<String, Object>) current.computeIfAbsent(part, k -> new LinkedHashMap<>());
         }
 
         current.put(path[path.length - 1], value);
