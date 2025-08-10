@@ -39,17 +39,18 @@ class AnyMapperExceptionSpec extends Specification {
                        'key1.key2.key4': ['destination': 'test2'],
                        'key1.key2.key5': ['destination': 'test3'],
                        'key1.key2.key6': ['destination': 'level2',
-                                          items: [
+                                          items        : [
                                                   k1: [destination: 'lvl2_k1'],
                                                   k2: [destination: 'level3',
-                                                       items: [
+                                                       items      : [
                                                                k3: [destination: 'lvl3_k1'],
                                                                k4: [destination: 'level4',
-                                                                    items: [
+                                                                    items      : [
                                                                             k5: [destination: 'lvl4_k1']
                                                                     ]]
                                                        ]]
                                           ]]
+        ]
 
         when:
         new AnyMapper(mapping, new AnyMapperConfig(2))

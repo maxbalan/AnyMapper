@@ -115,16 +115,16 @@ class AnyMapperMappingPointsSpec extends Specification {
         //children
         assert result.mappingPoints[0].children().size() == 2
         assert result.mappingPoints[0].children()[0].sourcePath().size() == 1
-        assert result.mappingPoints[0].children()[0].sourcePath().contains('lk2')
+        assert result.mappingPoints[0].children()[0].sourcePath().contains('lk1')
         assert result.mappingPoints[0].children()[0].destinationPath().size() == 2
         assert result.mappingPoints[0].children()[0].destinationPath().contains('test')
-        assert result.mappingPoints[0].children()[0].destinationPath().contains('k2')
+        assert result.mappingPoints[0].children()[0].destinationPath().contains('k1')
         assert result.mappingPoints[0].children()[0].isList() == false
         assert result.mappingPoints[0].children()[1].sourcePath().size() == 1
-        assert result.mappingPoints[0].children()[1].sourcePath().contains('lk1')
+        assert result.mappingPoints[0].children()[1].sourcePath().contains('lk2')
         assert result.mappingPoints[0].children()[1].destinationPath().size() == 2
         assert result.mappingPoints[0].children()[1].destinationPath().contains('test')
-        assert result.mappingPoints[0].children()[1].destinationPath().contains('k1')
+        assert result.mappingPoints[0].children()[1].destinationPath().contains('k2')
         assert result.mappingPoints[0].children()[1].isList() == false
     }
 
@@ -159,16 +159,16 @@ class AnyMapperMappingPointsSpec extends Specification {
         //children
         assert result.mappingPoints[0].children().size() == 3
         assert result.mappingPoints[0].children()[0].sourcePath().size() == 1
-        assert result.mappingPoints[0].children()[0].sourcePath().contains('lk2')
+        assert result.mappingPoints[0].children()[0].sourcePath().contains('lk1')
         assert result.mappingPoints[0].children()[0].destinationPath().size() == 2
         assert result.mappingPoints[0].children()[0].destinationPath().contains('test')
-        assert result.mappingPoints[0].children()[0].destinationPath().contains('k2')
+        assert result.mappingPoints[0].children()[0].destinationPath().contains('k1')
         assert result.mappingPoints[0].children()[0].isList() == false
         assert result.mappingPoints[0].children()[1].sourcePath().size() == 1
-        assert result.mappingPoints[0].children()[1].sourcePath().contains('lk1')
+        assert result.mappingPoints[0].children()[1].sourcePath().contains('lk2')
         assert result.mappingPoints[0].children()[1].destinationPath().size() == 2
         assert result.mappingPoints[0].children()[1].destinationPath().contains('test')
-        assert result.mappingPoints[0].children()[1].destinationPath().contains('k1')
+        assert result.mappingPoints[0].children()[1].destinationPath().contains('k2')
         assert result.mappingPoints[0].children()[1].isList() == false
         println result.mappingPoints[0].children()[2]
         assert result.mappingPoints[0].children()[2].sourcePath().size() == 1
