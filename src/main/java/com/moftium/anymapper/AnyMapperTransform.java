@@ -1,9 +1,9 @@
 package com.moftium.anymapper;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class AnyMapperTransform {
 
@@ -12,21 +12,21 @@ public class AnyMapperTransform {
 
     @SuppressWarnings("unchecked")
     protected static Map<String, Object> transform(Map<String, Object> source, List<AnyMapperPoint> mappingPoints) {
-        final Map<String, Object> result = new ConcurrentHashMap<>();
+        final int size = mappingPoints.size();
+        final Map<String, Object> result = new LinkedHashMap<>(size);
 
+        for (int i = 0; i < size; i++) {
+            AnyMapperPoint point = mappingPoints.get(i);
+            Object sourceValue = getValueByPath(source, point.sourcePath());
 
-        mappingPoints.parallelStream()
-                     .forEach(point -> {
-                         Object sourceValue = getValueByPath(source, point.sourcePath());
-
-                         if (sourceValue != null) {
-                             if (point.isList()) {
-                                 mapList(result, point, sourceValue);
-                             } else {
-                                 setValueByPath(result, point.destinationPath(), sourceValue);
-                             }
-                         }
-                     });
+            if (sourceValue != null) {
+                if (point.isList()) {
+                    mapList(result, point, sourceValue);
+                } else {
+                    setValueByPath(result, point.destinationPath(), sourceValue);
+                }
+            }
+        }
 
         return result;
     }
@@ -39,17 +39,15 @@ public class AnyMapperTransform {
         }
 
         List<?> sourceList = (List<?>) sourceValue;
-        List<Object> transformedList = new ArrayList<>();
+        int size = sourceList.size();
+        List<Object> transformedList = new ArrayList<>(size);
 
-        for (Object item : sourceList) {
-            if (!(item instanceof Map<?, ?>)) {
-                continue;
+        for (int i = 0; i < size; i++) {
+            Object item = sourceList.get(i);
+            if (item instanceof Map<?, ?>) {
+                Map<String, Object> childMap = transform((Map<String, Object>) item, point.children());
+                transformedList.add(childMap);
             }
-
-            Map<?, ?> sourceItem = (Map<?, ?>) item;
-            Map<String, Object> childMap = transform((Map<String, Object>) sourceItem, point.children());
-
-            transformedList.add(childMap);
         }
 
         setValueByPath(result, point.destinationPath(), transformedList);
@@ -79,12 +77,12 @@ public class AnyMapperTransform {
 
         for (int i = 0; i < path.length - 1; i++) {
             String part = path[i];
-
-            if (!current.containsKey(part) || !(current.get(part) instanceof Map)) {
-                current.put(part, new ConcurrentHashMap<String, Object>());
+            Map<String, Object> child = (Map<String, Object>) current.get(part);
+            if (child == null) {
+                child = new LinkedHashMap<>(4);
+                current.put(part, child);
             }
-
-            current = (Map<String, Object>) current.get(part);
+            current = child;
         }
 
         current.put(path[path.length - 1], value);

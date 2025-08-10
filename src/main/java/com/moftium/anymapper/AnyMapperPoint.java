@@ -13,8 +13,8 @@ public class AnyMapperPoint {
     protected AnyMapperPoint(String[] sourcePath, String[] destinationPath, List<AnyMapperPoint> children) {
         this.sourcePath = sourcePath;
         this.destinationPath = destinationPath;
-        this.isList = children.size() > 0;
-        this.children = children != null ? children : new ArrayList<>();
+        this.isList = !children.isEmpty();
+        this.children = children;
     }
 
     protected AnyMapperPoint(String[] sourcePath, String[] destinationPath) {
@@ -22,11 +22,11 @@ public class AnyMapperPoint {
     }
 
     public String[] sourcePath() {
-        return sourcePath.clone();
+        return sourcePath;
     }
 
     public String[] destinationPath() {
-        return destinationPath.clone();
+        return destinationPath;
     }
 
     public boolean isList() {
@@ -34,7 +34,7 @@ public class AnyMapperPoint {
     }
 
     public List<AnyMapperPoint> children() {
-        return new ArrayList<>(children);
+        return children;
     }
 
     @Override
